@@ -1,14 +1,12 @@
-{
-  "name": "wetube3",
+{ "name": "wetube3",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/UHquokka/wetube3.git"
   },
   "scripts": {
-    "dev": "nodemon --exec babel-node index.js"
+    "dev": "nodemon --exec babel-node src/server.js"
   },
   "author": "",
   "license": "MIT",
@@ -25,4 +23,5 @@
     "@babel/preset-env": "^7.20.2",
     "nodemon": "^2.0.20"
   }
+
 }
