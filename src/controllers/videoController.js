@@ -21,7 +21,7 @@ export const trending = (req, res) =>
 export const watch = (req, res) => {
   const { id } = req.params;
   const video = videos[id - 1];
-  return res.render("watch", { pageTitle: `Watching ${video.title}`, video });
+  return res.render("watch", { pageTitle: `Watching: ${video.title}`, video });
 };
 
 export const getEdit = (req, res) => {
@@ -32,7 +32,8 @@ export const getEdit = (req, res) => {
 };
 export const postEdit = (req, res) => {
   const { id } = req.params;
-  console.log(req.body);
+  const { title } = req.body;
+  videos[id - 1].title = title;
   return res.redirect(`/videos/${id}`);
 };
 export const search = (req, res) => res.send("Search");
