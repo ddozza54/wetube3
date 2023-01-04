@@ -1,10 +1,10 @@
 import Video from "../models/Video";
 
-export const home = (req, res) =>
-{ 
-  Video.find(); 
+export const home = async (req, res) => {
+  const videos = await Video.find({});
   return res.render("home", { pageTitle: "Home", videos });
-}
+};
+
 export const watch = (req, res) => {
   const { id } = req.params;
   return res.render("watch", { pageTitle: `Watching: ${video.title}`, video });
@@ -23,11 +23,21 @@ export const postEdit = (req, res) => {
 export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "Upload Video" });
 };
-export const postUpload = (req, res) => {
-  const { title } = req.body;
 
+export const postUpload = async (req, res) => {
+  const { title, description, hashtags } = req.body;
+  const video = new Video({
+    title,
+    description,
+    craeteAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    },
+  });
+  await video.save();
   return res.redirect("/");
 };
 
 export const search = (req, res) => res.send("Search");
-export const deleteVideo = (req, res) => res.send("delete video");
