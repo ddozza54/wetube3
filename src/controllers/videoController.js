@@ -8,19 +8,38 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "Video is not Found." });
+  }
+  //if문에서 return 해주는 것이 중요. 안그럼 아래까지 실행.
   return res.render("watch", { pageTitle: video.title, video });
 };
 
-export const getEdit = (req, res) => {
+export const getEdit = async (req, res) => {
   const { id } = req.params;
-
-  return res.render("edit", { pageTitle: `Editing:` });
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.render("404", { pageTitle: "Video is not Found." });
+  }
+  return res.render("edit", { pageTitle: `Editing: ${video.title}`, video });
 };
-export const postEdit = (req, res) => {
+
+export const postEdit = async (req, res) => {
   const { id } = req.params;
-  const { title } = req.body;
+  const video = await Video.findById(id);
+  const { title, description, hashtags } = req.body;
+  if (!video) {
+    return res.render("404", { pageTitle: "Video is not Found." });
+  }
+  video.title = title;
+  video.description = description;
+  video.hashtags = hashtags
+    .split(",")
+    .map((word) => (word.startsWith("#") ? word : `#${word}`));
+  await video.save();
   return res.redirect(`/videos/${id}`);
 };
+
 export const getUpload = (req, res) => {
   return res.render("upload", { pageTitle: "Upload Video" });
 };
