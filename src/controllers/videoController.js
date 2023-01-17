@@ -13,6 +13,7 @@ export const watch = async (req, res) => {
   }
   //if문에서 return 해주는 것이 중요. 안그럼 아래까지 실행.
   return res.render("watch", { pageTitle: video.title, video });
+  //댓글 - comment 버튼 생성/ 누를시 댓글로 스크롤 되는 기능
 };
 
 export const getEdit = async (req, res) => {
