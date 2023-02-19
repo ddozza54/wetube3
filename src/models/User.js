@@ -10,8 +10,11 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre("save", async function () {
+  console.log(this.password);
   this.password = await bcrypt.hash(this.password, 5);
+  console.log("hashed Passeword", this.password);
 });
+//this.password는 user가 준 password로 postJoin controller에서 넘겨준 것.
 
 const User = mongoose.model("User", userSchema);
 

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
   const { username, email, password, password2, name, loacation } = req.body;
+
   const pageTitle = "Join";
   if (password !== password2) {
     return res.status(400).render("join", {
@@ -11,6 +12,8 @@ export const postJoin = async (req, res) => {
       errorMessage: "Password confirmation does not match",
     });
   }
+
+  //or operator : 각 조건이 true 일 때 실행되게 만들 수 있다.
   const exists = await User.exists({ $or: [{ username }, { email }] });
   if (exists) {
     return res.status(400).render("join", {
@@ -48,7 +51,7 @@ export const postLogin = async (req, res) => {
       errorMessage: "User does not exits",
     });
   }
-  const match = await bcrypt.compare(password, user.password);
+  const ok = await bcrypt.compare(password, user.password);
   if (!match) {
     return res.status(400).render("login", {
       pageTitle,
@@ -56,7 +59,8 @@ export const postLogin = async (req, res) => {
     });
   }
   req.session.loggedin = true;
-  req.session.user = user;
+  req.session.user = user; //db에서 찾은 user을 session.user에 넘겨줌.
+  //위 두 줄은 세션에 정보를 추가한것임.
   res.redirect("/");
 };
 
