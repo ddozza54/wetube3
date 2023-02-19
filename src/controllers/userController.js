@@ -42,7 +42,7 @@ export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Login" });
 
 export const postLogin = async (req, res) => {
-  const { username, password } = res.body;
+  const { username, password } = req.body;
   const pageTitle = "Login";
   const user = await User.findOne({ username });
   if (!user) {
@@ -52,7 +52,7 @@ export const postLogin = async (req, res) => {
     });
   }
   const ok = await bcrypt.compare(password, user.password);
-  if (!match) {
+  if (!ok) {
     return res.status(400).render("login", {
       pageTitle,
       errorMessage: "Wrong Password",
