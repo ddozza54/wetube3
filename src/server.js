@@ -22,13 +22,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  req.sessionStore.all((error, session) => {
-    console.log(session);
-    next();
-  });
-});
-
 app.use(localsMiddleware);
 app.use("/", rootRouter);
 app.use("/videos", videoRouter);
