@@ -1,6 +1,6 @@
 import mongoose, { mongo } from "mongoose";
 mongoose.set("strictQuery", false);
-mongoose.connect("mongodb://127.0.0.1:27017/wetube3");
+mongoose.connect(process.env.DB_URL);
 
 const db = mongoose.connection;
 db.on("error", (error) => console.log("👽 DB Error:", error));
