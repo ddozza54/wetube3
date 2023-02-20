@@ -61,6 +61,7 @@ export const postLogin = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user; //db에서 찾은 user을 session.user에 넘겨줌.
   //위 두 줄은 세션에 정보를 추가한것임.
+  
   res.redirect("/");
 };
 
