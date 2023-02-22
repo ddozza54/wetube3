@@ -113,7 +113,13 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(emailData);
+    const email = emailData.find(
+      (email) => email.primary === true && email.verified === true
+    );
+    if (!email) {
+      res.redirect("/login");
+    }
+    //여기까지 왔다는건 이메일이 있다는것. 그렇다면 중복된 이멜은 어떻게 찾을 것인가!
   } else {
     res.redirect("/login");
   }
