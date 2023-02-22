@@ -45,7 +45,7 @@ export const getLogin = (req, res) =>
 export const postLogin = async (req, res) => {
   const { username, password } = req.body;
   const pageTitle = "Login";
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ username, socialOnly: false }); //여기에선 social로 로그인 안한 사람만
   if (!user) {
     return res.status(400).render("login", {
       pageTitle,
@@ -105,7 +105,6 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    console.log(userData);
     const emailData = await (
       await fetch(`${apiUrl}/user/emails`, {
         headers: {
@@ -113,17 +112,36 @@ export const finishGithubLogin = async (req, res) => {
         },
       })
     ).json();
-    const email = emailData.find(
+    const emailObj = emailData.find(
       (email) => email.primary === true && email.verified === true
     );
-    if (!email) {
+    if (!emailObj) {
       res.redirect("/login");
     }
     //여기까지 왔다는건 이메일이 있다는것. 그렇다면 중복된 이멜은 어떻게 찾을 것인가!
+    let user = await User.findOne({ email: emailObj.email });
+    if (!user) {
+      //craete Account
+      const user = await User.create({
+        name: userData.name ? userData.name : "Unknown",
+        avatarUrl: userData.avatar_url,
+        username: userData.login,
+        email: emailObj.email,
+        password: "", //pw 가 없다는것 = 소셜 로그인 했다는 것
+        socialOnly: true,
+        loacation: userData.loacation,
+      });
+    }
+    //이메일이 있으면 깃헙으로 로그인 했든, password 랑 같이 로그인했든 상관 안할거임.
+    req.session.loggedIn = true;
+    req.session.user = user;
+    res.redirect("/");
   } else {
     res.redirect("/login");
   }
 };
-export const logout = (req, res) => res.send("Log Out");
+export const logout = (req, res) => {
+  req.session.destroy();
+  return res.redirect("/");
+};
 export const edit = (req, res) => res.send("Edit User");
-export const remove = (req, res) => res.send("Remove User");
