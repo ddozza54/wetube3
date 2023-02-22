@@ -61,9 +61,23 @@ export const postLogin = async (req, res) => {
   req.session.loggedIn = true;
   req.session.user = user; //db에서 찾은 user을 session.user에 넘겨줌.
   //위 두 줄은 세션에 정보를 추가한것임.
-  
+
   res.redirect("/");
 };
 
+export const startGithubLogin = (req, res) => {
+  const baseUrl = "https://github.com/login/oauth/authorize";
+  const config = {
+    client_id: "f55db77cf09de611a6ea",
+    allow_signup: false,
+    scope: "read:user user:email",
+  };
+  const params = new URLSearchParams(config).toString();
+  const finalUrl = `${baseUrl}?${params}`;
+  return res.redirect(finalUrl);
+};
+
+export const finishGithubLogin = (req, res) => {};
+export const logout = (req, res) => res.send("Log Out");
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Remove User");
