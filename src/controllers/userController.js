@@ -153,7 +153,11 @@ export const postEdit = async (req, res) => {
     },
     body: { email, username, name, loacation },
   } = req;
-  await User.findByIdAndUpdate(_id, { email, username, name, loacation });
-  req.session.user = { ...req.session.user, email, username, name, loacation };
+  const updatedUser = await User.findByIdAndUpdate(
+    _id,
+    { email, username, name, loacation },
+    { new: true }
+  );
+  req.session.user = updatedUser;
   return res.redirect("/users/edit");
 };
